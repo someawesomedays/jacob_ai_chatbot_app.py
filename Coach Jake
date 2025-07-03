@@ -1,0 +1,78 @@
+import streamlit as st
+from datetime import datetime
+
+# --- Profile Section ---
+st.title("Jacob Isaacson's Personal Assistant 🤖")
+st.image("https://i.imgur.com/NlWVX2e.jpg", width=200)
+
+# Profile Info
+name = "Jacob Isaacson"
+birthdate = "1972-01-07"
+zodiac = "Capricorn"
+weight_lbs = 187
+
+# Calculate age
+today = datetime.today()
+birth_date = datetime.strptime(birthdate, "%Y-%m-%d")
+age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+
+with st.expander("👤 About Jacob"):
+    st.write(f"**Name:** {name}")
+    st.write(f"**Birthday:** {birthdate} 🎂")
+    st.write(f"**Age:** {age} years old")
+    st.write(f"**Zodiac Sign:** {zodiac} ♑")
+    st.write(f"**Weight:** {weight_lbs} lbs ⚖️")
+    st.markdown("""
+    **Personality Traits**
+    - Ambitious and goal-oriented 💼  
+    - Loyal and dependable 🤝  
+    - Practical thinker 🧠  
+    - Loves structure and discipline 📊
+    """)
+    st.markdown("> *“Success is not final, failure is not fatal: it is the courage to continue that counts.”* – Winston Churchill")
+
+# --- AI Chatbot Section ---
+st.subheader("💬 Ask Me Anything")
+
+# Initialize chat history
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# Display chat history
+for msg in st.session_state.messages:
+    with st.chat_message(msg["role"]):
+        st.markdown(msg["content"])
+
+# User input
+if user_input := st.chat_input("Type your message here..."):
+    # Save user message
+    st.session_state.messages.append({"role": "user", "content": user_input})
+
+    # Display user message
+    with st.chat_message("user"):
+        st.markdown(user_input)
+
+    # Generate assistant response
+    with st.chat_message("assistant"):
+        response = generate_response(user_input)
+        st.markdown(response)
+
+    # Save assistant message
+    st.session_state.messages.append({"role": "assistant", "content": response})
+
+
+# --- Function to generate AI-like response ---
+def generate_response(user_msg):
+    user_msg = user_msg.lower()
+    if "zodiac" in user_msg:
+        return f"I'm a proud {zodiac}! Capricorns are known for their discipline and ambition. ♑"
+    elif "age" in user_msg:
+        return f"I was born on {birthdate}, so I am {age} years old."
+    elif "quote" in user_msg or "inspire" in user_msg:
+        return "“Success is not final, failure is not fatal: it is the courage to continue that counts.” – Winston Churchill"
+    elif "name" in user_msg:
+        return f"My name is {name}. Nice to meet you!"
+    elif "weight" in user_msg:
+        return f"I weigh {weight_lbs} lbs, keeping strong! ⚖️"
+    else:
+        return "I'm here to help! Ask me anything about Jacob, astrology, quotes, or life advice!"
